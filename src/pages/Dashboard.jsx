@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import StatCard from "../components/common/StatCard";
+import { useApp } from "../context/AppContext";
 
 const Dashboard = () => {
     const [tasks, setTasks] = useState([]);
+    const { tasks: appTasks, focusStreak } = useApp();
+
 
     useEffect(() => {
         const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
@@ -11,7 +14,7 @@ const Dashboard = () => {
 
     const today = new Date().toDateString();
 
-    const todayTasks = tasks.filter(t => t.date === today);
+    const todayTasks = appTasks.filter(t => t.date === today);
     const completedTasks = todayTasks.filter(t => t.completed).length;
 
     const completion =

@@ -1,61 +1,35 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useApp } from "../context/AppContext";
 
 const Planner = () => {
-    const [tasks, setTasks] = useState([]);
+    const { tasks, addTask, toggleTask } = useApp();
+
     const [title, setTitle] = useState("");
     const [subject, setSubject] = useState("Math");
 
-
-    // Load tasks from localStorage
-    useEffect(() => {
-        const saved = JSON.parse(localStorage.getItem("tasks")) || [];
-        setTasks(saved);
-    }, []);
-
-    // Save tasks to localStorage
-    useEffect(() => {
-        localStorage.setItem("tasks", JSON.stringify(tasks));
-    }, [tasks]);
-
-    // Add task
-    const addTask = (e) => {
+    const handleAddTask = (e) => {
         e.preventDefault();
         if (!title.trim()) return;
 
-        setTasks([
-            ...tasks,
-            {
-                id: Date.now(),
-                title,
-                subject,
-                completed: false,
-                date: new Date().toDateString(),
-            },
-        ]);
-
+        addTask({
+            id: Date.now(),
+            title,
+            subject,
+            completed: false,
+            date: new Date().toDateString(),
+        });
 
         setTitle("");
     };
 
-    // Toggle complete
-    const toggleTask = (id) => {
-        setTasks(
-            tasks.map((task) =>
-                task.id === id
-                    ? { ...task, completed: !task.completed }
-                    : task
-            )
-        );
-    };
-
     return (
         <div className="max-w-2xl mx-auto space-y-6">
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
+            <h2 className="text-2xl font-bold dark:text-white">
                 Study Planner 📚
             </h2>
 
             {/* Add Task */}
-            <form onSubmit={addTask} className="flex gap-2 flex-wrap">
+            <form onSubmit={handleAddTask} className="flex gap-2 flex-wrap">
                 <input
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
@@ -79,7 +53,6 @@ const Planner = () => {
                 </button>
             </form>
 
-
             {/* Task List */}
             <ul className="space-y-3">
                 {tasks.map((task) => (
@@ -88,13 +61,18 @@ const Planner = () => {
                         className={`p-4 rounded-lg flex justify-between items-center bg-white dark:bg-gray-800 shadow ${task.completed && "opacity-60"
                             }`}
                     >
-                        <span
-                            onClick={() => toggleTask(task.id)}
-                            className={`cursor-pointer ${task.completed && "line-through"
-                                }`}
-                        >
-                            {task.title}
-                        </span>
+                        <div>
+                            <p
+                                onClick={() => toggleTask(task.id)}
+                                className={`cursor-pointer ${task.completed && "line-through"
+                                    }`}
+                            >
+                                {task.title}
+                            </p>
+                            <p className="text-sm text-gray-500">
+                                {task.subject}
+                            </p>
+                        </div>
 
                         <input
                             type="checkbox"
