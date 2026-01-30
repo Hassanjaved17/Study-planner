@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 const Planner = () => {
     const [tasks, setTasks] = useState([]);
     const [title, setTitle] = useState("");
+    const [subject, setSubject] = useState("Math");
+
 
     // Load tasks from localStorage
     useEffect(() => {
@@ -25,10 +27,12 @@ const Planner = () => {
             {
                 id: Date.now(),
                 title,
+                subject,
                 completed: false,
                 date: new Date().toDateString(),
             },
         ]);
+
 
         setTitle("");
     };
@@ -51,17 +55,30 @@ const Planner = () => {
             </h2>
 
             {/* Add Task */}
-            <form onSubmit={addTask} className="flex gap-2">
+            <form onSubmit={addTask} className="flex gap-2 flex-wrap">
                 <input
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="Add study task..."
-                    className="flex-1 p-3 rounded-lg border dark:bg-gray-800 dark:text-white"
+                    className="flex-1 p-3 rounded-lg border dark:bg-gray-800"
                 />
-                <button className="px-4 rounded-lg bg-blue-600 text-white">
+
+                <select
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                    className="p-3 rounded-lg border dark:bg-gray-800"
+                >
+                    <option>Math</option>
+                    <option>Physics</option>
+                    <option>Computer Science</option>
+                    <option>English</option>
+                </select>
+
+                <button className="px-4 bg-blue-600 text-white rounded-lg">
                     Add
                 </button>
             </form>
+
 
             {/* Task List */}
             <ul className="space-y-3">
